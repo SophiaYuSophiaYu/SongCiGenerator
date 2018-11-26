@@ -32,13 +32,16 @@ with open(FLAGS.dictionary, encoding='utf-8') as inf:
 with open(FLAGS.reverse_dictionary, encoding='utf-8') as inf:
     reverse_dictionary = json.load(inf, encoding='utf-8')
 
+reverse_list = [reverse_dictionary[str(i)]
+                for i in range(len(reverse_dictionary))]
+
 # vocabulary = np.array(vocabulary)
 # vocabulary = index_data(vocabulary, dictionary)
-vocabulary = utils.index_data(np.array([[vocabulary]]), dictionary)
+# vocabulary = utils.index_data(np.array([[vocabulary]]), dictionary)
 
 
 model = Model(learning_rate=FLAGS.learning_rate, batch_size=FLAGS.batch_size, num_steps=FLAGS.num_steps)
-model.build(FLAGS.embedding)
+model.build()
 
 
 with tf.Session() as sess:
@@ -60,12 +63,14 @@ with tf.Session() as sess:
     for x in range(1):
         logging.debug('epoch [{0}]....'.format(x))
         state = sess.run(model.initial_state)
-        gs = 0
+        
         for input, lable in utils.get_train_data(vocabulary, batch_size=FLAGS.batch_size, num_steps=FLAGS.num_steps):
-            gs += 1
-            feed_dict = {model.X: input,
-                         model.Y: lable,
-                         model.keep_prob: 0.5,
+            input_data = utils.index_data(input, dictionary)
+            lable_data = utils.index_data(lable, dictionary)
+
+            feed_dict = {model.X: input_data,
+                         model.Y: lable_data,
+                         model.keep_prob: 0.6,
                          model.initial_state: state}
 
             gs, _, state, l, summary_string = sess.run([model.global_step,
@@ -77,11 +82,11 @@ with tf.Session() as sess:
             summary_string_writer.add_summary(summary_string, gs)
             if gs % 10 == 0:
                 logging.debug('step [{0}] loss [{1}]'.format(gs, l))
-                save_path = saver.save(sess, os.path.join(FLAGS.output_dir, "model"), global_step=gs)
+                save_path = saver.save(sess, os.path.join(FLAGS.output_dir, "model.ckpt"), global_step=gs)
 
             if gs >= FLAGS.max_steps:
                 break
 
-        saver.save(sess, os.path.join(FLAGS.output_dir, "model"), global_step=gs)
+        saver.save(sess, os.path.join(FLAGS.output_dir, "model.ckpt"), global_step=gs)
 
     summary_string_writer.close()

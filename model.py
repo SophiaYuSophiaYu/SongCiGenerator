@@ -50,9 +50,9 @@ class Model():
             0, trainable=False, name='self.global_step', dtype=tf.int64)
 
         self.X = tf.placeholder(
-            tf.int32, shape=[self.batch_size, self.num_steps], name='input')
+            tf.int32, shape=[None, self.num_steps], name='input')
         self.Y = tf.placeholder(
-            tf.int32, shape=[self.batch_size, self.num_steps], name='label')
+            tf.int32, shape=[None, self.num_steps], name='label')
 
         self.keep_prob = tf.placeholder(tf.float32, name='keep_prob')
 
@@ -74,24 +74,25 @@ class Model():
             # state_size是(self.dim_embedding,self.dim_embedding,self.dim_embedding)也就是每个隐层大小均为128
             cell = tf.nn.rnn_cell.MultiRNNCell(
                 [get_a_cell(self.dim_embedding, self.keep_prob) for _ in range(self.rnn_layers)])
-
             # 初始状态，通过zero_state得到一个全0的初始状态
             self.initial_state = cell.zero_state(self.batch_size, tf.float32)
-
             # 通过dynamic_rnn对cell在时间维度进行展开 lstm_outputs 64*32*128
             self.lstm_outputs, self.final_state = tf.nn.dynamic_rnn(cell, self.rnn_inputs,
                                                                     initial_state=self.initial_state)
 
-            # 通过lstm_outputs得到概率
-            seq_output = tf.concat(self.lstm_outputs, 1)
+        # 通过lstm_outputs得到概率
+        seq_output = tf.concat(self.lstm_outputs, 1)
 
-            # flatten it  展开
-            seq_output_final = tf.reshape(seq_output, [-1, self.dim_embedding])
+        # flatten it  展开
+        seq_output_final = tf.reshape(seq_output, [-1, self.dim_embedding])
 
 
         with tf.variable_scope('softmax'):
-            softmax_w = tf.Variable(tf.truncated_normal([self.dim_embedding, self.num_words], stddev=0.1))
-            softmax_b = tf.Variable(tf.zeros(self.num_words))
+            # softmax_w = tf.Variable(tf.truncated_normal([self.dim_embedding, self.num_words], stddev=0.1))
+            # softmax_b = tf.Variable(tf.zeros(self.num_words))
+            softmax_w = tf.get_variable('softmax_W', [self.dim_embedding, self.num_words],
+                                  initializer=tf.random_normal_initializer(stddev=0.01))
+            softmax_b = tf.get_variable('softmax_b', [self.num_words], initializer=tf.constant_initializer(0.0))
 
         self.logits = tf.matmul(seq_output_final, softmax_w) + softmax_b
         tf.summary.histogram('logits', self.logits)

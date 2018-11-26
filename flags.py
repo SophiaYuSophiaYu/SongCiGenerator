@@ -21,7 +21,7 @@ def parse_args(check=True):
     parser.add_argument('--num_steps', type=int, default=32,
                         help='number of time steps of one sample.')
 
-    parser.add_argument('--batch_size', type=int, default=16,
+    parser.add_argument('--batch_size', type=int, default=3,
                         help='batch size to use.')
 
     parser.add_argument('--dictionary', type=str, default='dictionary.json',
@@ -36,7 +36,7 @@ def parse_args(check=True):
     parser.add_argument('--learning_rate', type=float, default=0.001,
                         help='learning rate')
 
-    parser.add_argument('--max_steps', type=int, default=10000,
+    parser.add_argument('--max_steps', type=int, default=1000,
                         help='learning rate')
 
     FLAGS, unparsed = parser.parse_known_args()
