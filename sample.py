@@ -28,7 +28,6 @@ reverse_list = [reverse_dictionary[str(i)]
                 for i in range(len(reverse_dictionary))]
 titles = ['江神子', '蝶恋花', '渔家傲']
 
-
 model = Model(learning_rate=FLAGS.learning_rate, batch_size=1, num_steps=1)
 model.build(FLAGS.embedding)
 
@@ -74,9 +73,20 @@ with tf.Session() as sess:
             pred, state = sess.run(
                 [model.predictions, model.final_state], feed_dict=feed_dict)
 
-            word_index = pred[0].argsort()[-1]
+            pred = pred.flatten()
+
+            print('pred:', pred)
+            print('pred max', pred.max())
+            print('pred max value position', np.argmax(pred))
+
+            word_index = pred.argsort()[-1]
+            print('word_index:', word_index)
             word = np.take(reverse_list, word_index)
+            print('word:', word)
+
             sentence = sentence + word
+
+
 
         logging.debug('==============[{0}]=============='.format(title))
         logging.debug(sentence)
