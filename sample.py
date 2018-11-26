@@ -54,7 +54,6 @@ with tf.Session() as sess:
         # feed title
         for head in title:
             input = utils.index_data(np.array([[head]]), dictionary)
-            print('eval input size:', input.shape)
 
             feed_dict = {model.X: input,
                          model.initial_state: state,
