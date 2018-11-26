@@ -70,7 +70,7 @@ class Model():
             self.rnn_inputs = tf.nn.embedding_lookup(embed, self.X)
 
         with tf.variable_scope('rnn'):
-            # 用tf.nn.rnn_cell MultiRNNCell创建self.rnn_layers层RNN
+            # 用tf.nn.rnn_cell.MultiRNNCell创建self.rnn_layers层RNN
             # state_size是(self.dim_embedding,self.dim_embedding,self.dim_embedding)也就是每个隐层大小均为128
             cell = tf.nn.rnn_cell.MultiRNNCell(
                 [get_a_cell(self.dim_embedding, self.keep_prob) for _ in range(self.rnn_layers)])

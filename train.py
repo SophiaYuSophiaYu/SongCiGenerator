@@ -35,11 +35,6 @@ with open(FLAGS.reverse_dictionary, encoding='utf-8') as inf:
 reverse_list = [reverse_dictionary[str(i)]
                 for i in range(len(reverse_dictionary))]
 
-# vocabulary = np.array(vocabulary)
-# vocabulary = index_data(vocabulary, dictionary)
-# vocabulary = utils.index_data(np.array([[vocabulary]]), dictionary)
-
-
 model = Model(learning_rate=FLAGS.learning_rate, batch_size=FLAGS.batch_size, num_steps=FLAGS.num_steps)
 model.build()
 
@@ -61,7 +56,7 @@ with tf.Session() as sess:
         logging.debug('no check point found....')
 
     for x in range(1):
-        logging.debug('epoch [{0}]....'.format(x))
+        # logging.debug('epoch [{0}]....'.format(x))
         state = sess.run(model.initial_state)
         
         for input, lable in utils.get_train_data(vocabulary, batch_size=FLAGS.batch_size, num_steps=FLAGS.num_steps):
