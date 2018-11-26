@@ -38,7 +38,7 @@ def get_train_data(vocabulary, batch_size, num_steps):
     """
     vocabulary = np.array(copy.copy(vocabulary))
     vocabulary = vocabulary.flatten()
-    vocabulary = vocabulary[: 3000]
+    
     # batch数量
     n_batches = int(len(vocabulary) / (batch_size*num_steps))
 
