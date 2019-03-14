@@ -124,6 +124,88 @@ RNN网络模型结构如下图所示
 
 （1）一开始建立模型时，输入了之前做好的embedding矩阵，并不随模型一起训练，导致模型训练结果不好，几个epoch后，输出一直是UNK，令embedding矩阵随模型一起训练和更新就正常了；
 
+ （2）batch_size设小一些，相对来说训练效果较好（2个epoch后就能输出看起来有一点意义的句子，而不是UNK或重复一个字），但是训练速度慢，一个epoch的step较多；
+
+​       下图为batch_size为3时，训练2个epoch后的输出结果，可以看出，已经可以输出一些有意义的句子。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172021319.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+如下图所示，batch_size为64时，2个epoch后的结果，可以看出只学习到了换行。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2019031417213364.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+如下图所示，batch_size为64时，2个epoch后的结果，可以看出已经开始可以输出有意义的句子了。
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2019031417220735.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+（3）模型运行结果
+
+| num_epoch | batch_size | num_steps | total_loss | var_loss | time_cost |
+| --------- | ---------- | --------- | ---------- | -------- | --------- |
+| 30        | 3          | 64        | 4.79       | 0.03     | 13h       |
+| 30        | 16         | 64        | 4.61       | 0.08     | 7h        |
+| 30        | 64         | 64        | 5.10       | 0.37     | 4h        |
+
+**batch_size 3**最终结果：（https://www.tinymind.com/executions/dgcf35wn）
+
+
+
+
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172233466.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172256340.png)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172322822.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+ 
+
+ 
+
+**batch_size 16**最终结果：（https://www.tinymind.com/executions/cous9sgd）
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172351385.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172417156.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172438596.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+ 
+
+ 
+
+**batch_size 64**最终结果：（https://www.tinymind.com/executions/sshq3f1l）
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172500728.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20190314172518844.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2019031417254139.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2t1YWl6aV9zb3BoaWE=,size_16,color_FFFFFF,t_70)
+
+综上所述，可以看出，训练效果最好的模型参数为batch_size 16、num_steps 64，并且，从loss曲线可以看出，此模型若继续训练loss还会继续下降。
+
+# 7、链接
+
+模型运行链接：
+
+batch_size为3：
+
+<https://www.tinymind.com/executions/dgcf35wn>
+
+batch_size为64：
+
+<https://www.tinymind.com/executions/sshq3f1l>
+
+batch_size为16：
+
+<https://www.tinymind.com/executions/cous9sgd>
+
+ 
+
+模型代码链接：
+
+<https://gitee.com/SophiaYuSophiaYu/SongCiGenerator>
+
  
 
  
